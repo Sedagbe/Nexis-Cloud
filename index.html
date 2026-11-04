@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexis Cloud Solutions | B2B Cloud Intelligence & ERP Connectors</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts : Inter -->
+  <title>Nexis Cloud Solutions | Plateforme d'Intégration & Analytique Cloud ERP</title>
+  <meta name="description" content="Nexis Cloud Solutions unifie vos flux de données SAP, Salesforce et NetSuite au sein d'une infrastructure analytique temps réel, souveraine et certifiée ISO 27001.">
+  
+  <!-- Polices Google Font : Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
@@ -28,170 +30,147 @@
               500: '#6366f1',
               600: '#4f46e5',
               700: '#4338ca',
-              accent: '#06b6d4',
-              emerald: '#10b981',
-              dark: '#030712'
-            }
-          },
-          animation: {
-            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'float': 'float 6s ease-in-out infinite',
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-10px)' },
+              900: '#1e1b4b',
+            },
+            accent: {
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
             }
           }
         }
       }
     }
   </script>
-
   <style>
-    /* Effets de grille et d'arrières-plans technologiques */
+    body {
+      background-color: #07090e;
+      color: #e2e8f0;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
     .bg-grid-pattern {
-      background-size: 40px 40px;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(99, 102, 241, 0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
     .glass-card {
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(15, 23, 42, 0.72);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .glass-nav {
-      background: rgba(3, 7, 18, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .glow-cyan {
-      box-shadow: 0 0 50px -10px rgba(6, 182, 212, 0.25);
     }
     .glow-indigo {
-      box-shadow: 0 0 50px -10px rgba(99, 102, 241, 0.3);
+      box-shadow: 0 0 50px -12px rgba(99, 102, 241, 0.22);
     }
-    /* Masquer la scrollbar pour certains conteneurs horizontaux */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    .glow-cyan {
+      box-shadow: 0 0 50px -12px rgba(14, 165, 233, 0.22);
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans selection:bg-brand-500 selection:text-white antialiased overflow-x-hidden min-h-screen">
+<body class="antialiased selection:bg-brand-500 selection:text-white">
 
   <!-- ==================== NOTIFICATION TOAST ==================== -->
-  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-xl shadow-2xl">
-    <div id="toastIcon" class="w-2.5 h-2.5 rounded-full bg-cyan-400"></div>
-    <span id="toastMessage" class="text-sm font-medium">Information</span>
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="glass-card px-5 py-3.5 rounded-2xl border border-slate-700/80 shadow-2xl flex items-center gap-3">
+      <div id="toastIcon" class="w-2.5 h-2.5 rounded-full bg-accent-400"></div>
+      <p id="toastMessage" class="text-xs font-medium text-slate-200"></p>
+    </div>
   </div>
 
-  <!-- ==================== HEADER / NAVIGATION ==================== -->
-  <header class="fixed top-0 left-0 right-0 z-40 glass-nav">
+  <!-- ==================== HEADER / NAVBAR ==================== -->
+  <header class="fixed top-0 left-0 right-0 z-40 border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <!-- Logo -->
+      
+      <!-- Logo de la marque -->
       <a href="#hero" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-500 p-0.5 shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform duration-300">
           <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-            <svg class="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 12v4m0 0l-2-2m2 2l2-2" />
+            <svg class="w-5 h-5 text-accent-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
             </svg>
           </div>
         </div>
         <div>
-          <div class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
-            Nexis <span class="bg-gradient-to-r from-brand-400 to-cyan-400 bg-clip-text text-transparent">Cloud</span>
-          </div>
-          <span class="text-[10px] uppercase font-mono tracking-wider text-slate-400 block -mt-1">Enterprise Analytics</span>
+          <span class="text-lg font-extrabold tracking-tight text-white group-hover:text-slate-100 transition-colors">
+            NEXIS<span class="text-accent-400">.</span>CLOUD
+          </span>
+          <span class="block text-[10px] uppercase font-mono tracking-widest text-slate-400 -mt-1">Enterprise Architecture</span>
         </div>
       </a>
 
       <!-- Menu Desktop -->
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-        <a href="#hero" class="hover:text-white transition-colors">Accueil</a>
         <a href="#solutions" class="hover:text-white transition-colors">Solutions</a>
-        <a href="#team" class="hover:text-white transition-colors flex items-center gap-1.5">
-          Équipe & OSINT
-          <span class="px-1.5 py-0.5 text-[10px] font-mono bg-cyan-950 text-cyan-300 rounded border border-cyan-800">Cible</span>
-        </a>
+        <a href="#architecture" class="hover:text-white transition-colors">Plateforme</a>
+        <a href="#team" class="hover:text-white transition-colors">Équipe & Leadership</a>
         <a href="#careers" class="hover:text-white transition-colors">Carrières</a>
+        <a href="#contact" class="hover:text-white transition-colors">Contact</a>
       </nav>
 
       <!-- Boutons Actions -->
-      <div class="flex items-center gap-3">
-        <button onclick="openSsoModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700/80 hover:border-slate-600 transition-all shadow-sm">
-          <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          <span>Portail SSO Interne</span>
+      <div class="flex items-center gap-4">
+        <!-- Bouton LinkedIn Entreprise dans la Navbar -->
+        <button onclick="openLinkedIn('company')" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#0a66c2]/20 hover:bg-[#0a66c2]/35 text-[#38bdf8] border border-[#0a66c2]/40 transition-all">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          <span>LinkedIn</span>
         </button>
-
-        <a href="#careers" class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-brand-600 to-cyan-600 hover:from-brand-500 hover:to-cyan-500 text-white shadow-lg shadow-brand-600/25 transition-all">
-          Rejoindre l'équipe
+        <a href="#contact" class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white shadow-lg shadow-brand-600/25 transition-all">
+          Demander une démo
         </a>
       </div>
     </div>
   </header>
 
-  <main class="relative pt-28">
+  <main class="relative pt-20">
 
     <!-- ==================== HERO SECTION ==================== -->
-    <section id="hero" class="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-grid-pattern px-4 sm:px-6 lg:px-8 py-16">
+    <section id="hero" class="relative min-h-[88vh] flex items-center justify-center overflow-hidden bg-grid-pattern px-4 sm:px-6 lg:px-8 py-20">
       <!-- Halos lumineux d'ambiance -->
-      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-brand-600/20 rounded-full blur-[140px] pointer-events-none"></div>
-      <div class="absolute top-1/3 left-1/3 w-[300px] h-[300px] bg-cyan-500/15 rounded-full blur-[120px] pointer-events-none"></div>
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[360px] bg-brand-600/20 rounded-full blur-[140px] pointer-events-none"></div>
+      <div class="absolute top-1/3 left-1/4 w-[320px] h-[320px] bg-accent-500/15 rounded-full blur-[120px] pointer-events-none"></div>
 
       <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
         
         <!-- Colonne Texte -->
         <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
-          <!-- Statut / Badge temps réel -->
+          
           <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/80 text-xs font-medium text-slate-300">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span>Nexis Core v4.8 • Connecteurs ERP certifiés ISO 27001</span>
+            <span>Nexis Core Engine 4.8 • Certifié ISO/IEC 27001 & SOC 2 Type II</span>
           </div>
 
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.12]">
-            L'analytique Cloud B2B <br/>
-            <span class="bg-gradient-to-r from-brand-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">
-              unifiée, temps réel & souveraine.
+            L'intelligence analytique <br/>
+            <span class="bg-gradient-to-r from-brand-400 via-accent-400 to-emerald-400 bg-clip-text text-transparent">
+              nouvelle génération pour vos ERP.
             </span>
           </h1>
 
           <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
-            Nexis Cloud Solutions connecte instantanément vos ERP (SAP, Salesforce, NetSuite) à un Data Lake haute performance. Surveillez, synchronisez et automatisez vos flux stratégiques en totale conformité RGPD.
+            Nexis Cloud Solutions connecte instantanément vos ERP d'entreprise (SAP, Salesforce, NetSuite) à un Data Lake souverain haute performance. Surveillez, synchronisez et fiabilisez vos flux critiques en totale conformité européenne.
           </p>
 
           <!-- Boutons CTA -->
           <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-            <button onclick="triggerDemoToast()" class="px-6 py-3.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-brand-600 to-cyan-500 hover:from-brand-500 hover:to-cyan-400 text-white shadow-xl shadow-brand-500/25 transition-all flex items-center gap-2">
-              <span>Demander une démo entreprise</span>
+            <a href="#contact" class="px-6 py-3.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white shadow-xl shadow-brand-500/25 transition-all flex items-center gap-2">
+              <span>Planifier un échange d'experts</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </button>
-            <a href="#team" class="px-6 py-3.5 rounded-xl font-medium text-sm bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-slate-600 transition-all">
-              Organigramme de l'entreprise
+            </a>
+            <a href="#solutions" class="px-6 py-3.5 rounded-xl font-medium text-sm bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-slate-600 transition-all">
+              Découvrir la plateforme
             </a>
           </div>
 
-          <!-- Métriques rapides -->
+          <!-- Métriques corporate -->
           <div class="pt-6 border-t border-slate-800/80 grid grid-cols-3 gap-6 max-w-lg mx-auto lg:mx-0 text-left">
             <div>
               <div class="text-2xl font-bold text-white font-mono">99.99%</div>
               <div class="text-xs text-slate-400 mt-0.5">SLA Disponibilité</div>
             </div>
             <div>
-              <div class="text-2xl font-bold text-cyan-400 font-mono">45+</div>
-              <div class="text-xs text-slate-400 mt-0.5">Collaborateurs</div>
+              <div class="text-2xl font-bold text-accent-400 font-mono">+250</div>
+              <div class="text-xs text-slate-400 mt-0.5">Grands Comptes B2B</div>
             </div>
             <div>
               <div class="text-2xl font-bold text-brand-400 font-mono">&lt; 14ms</div>
@@ -200,71 +179,61 @@
           </div>
         </div>
 
-        <!-- Colonne Dashboard Preview Interactif -->
-        <div class="lg:col-span-5 relative">
-          <div class="glass-card rounded-2xl p-5 glow-indigo relative overflow-hidden">
-            <!-- Header du faux widget -->
+        <!-- Colonne Visuelle Console / Observabilité -->
+        <div class="lg:col-span-5">
+          <div class="glass-card rounded-2xl border border-slate-700/80 p-5 shadow-2xl relative overflow-hidden">
             <div class="flex items-center justify-between pb-4 border-b border-slate-800">
               <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
-                <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
-                <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
-                <span class="text-xs font-mono text-slate-400 ml-2">portal.nexis-cloud.fr/telemetry</span>
+                <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+                <span class="text-xs font-mono text-slate-400 ml-2">nexis-cluster-europe-west-3</span>
               </div>
-              <span class="text-[11px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/60 font-mono">LIVE SYNC</span>
+              <span class="px-2 py-0.5 text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded">EN LIGNE</span>
             </div>
 
-            <!-- Contenu Dashboard -->
-            <div class="mt-4 space-y-4">
-              <div class="grid grid-cols-2 gap-3">
-                <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <div class="text-[11px] text-slate-400 uppercase tracking-wider font-mono">Flux ERP Ingest</div>
-                  <div class="text-xl font-bold text-white font-mono mt-1">1.482 Gbps</div>
-                  <div class="text-[10px] text-emerald-400 flex items-center gap-1 mt-1">
-                    <span>↑ +12.4%</span>
-                    <span class="text-slate-500">vs 1h</span>
-                  </div>
+            <!-- Flux de données animés / Moniteurs -->
+            <div class="mt-4 space-y-3 font-mono text-xs">
+              <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                <div>
+                  <div class="text-slate-300 font-medium">SAP S/4HANA Pipeline</div>
+                  <div class="text-[11px] text-slate-500">Flux commandes & facturation</div>
                 </div>
-                <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <div class="text-[11px] text-slate-400 uppercase tracking-wider font-mono">Instances Actives</div>
-                  <div class="text-xl font-bold text-cyan-400 font-mono mt-1">64 / 64</div>
-                  <div class="text-[10px] text-slate-400 mt-1">Datacenter Nantes-Est</div>
+                <div class="text-right">
+                  <span class="text-emerald-400 font-semibold">18,420 evt/s</span>
+                  <div class="text-[10px] text-slate-500">Zéro paquet perdu</div>
                 </div>
               </div>
 
-              <!-- Faux graphique interactif SVG -->
-              <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
-                <div class="flex items-center justify-between mb-3 text-xs">
-                  <span class="font-medium text-slate-300">Activité Transactions B2B</span>
-                  <span class="font-mono text-cyan-400">Peak : 38 400 req/s</span>
+              <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                <div>
+                  <div class="text-slate-300 font-medium">Salesforce Enterprise CRM</div>
+                  <div class="text-[11px] text-slate-500">Synchronisation bidirectionnelle</div>
                 </div>
-                <div class="h-28 w-full flex items-end gap-1.5 pt-4">
-                  <div class="flex-1 bg-brand-500/30 hover:bg-cyan-400 transition-all rounded-t h-[40%]"></div>
-                  <div class="flex-1 bg-brand-500/40 hover:bg-cyan-400 transition-all rounded-t h-[65%]"></div>
-                  <div class="flex-1 bg-brand-500/30 hover:bg-cyan-400 transition-all rounded-t h-[50%]"></div>
-                  <div class="flex-1 bg-brand-500/60 hover:bg-cyan-400 transition-all rounded-t h-[80%]"></div>
-                  <div class="flex-1 bg-brand-500/50 hover:bg-cyan-400 transition-all rounded-t h-[70%]"></div>
-                  <div class="flex-1 bg-cyan-500 hover:bg-brand-400 transition-all rounded-t h-[92%] shadow-lg shadow-cyan-500/50"></div>
-                  <div class="flex-1 bg-brand-500/40 hover:bg-cyan-400 transition-all rounded-t h-[60%]"></div>
-                  <div class="flex-1 bg-brand-500/70 hover:bg-cyan-400 transition-all rounded-t h-[85%]"></div>
-                  <div class="flex-1 bg-brand-500/50 hover:bg-cyan-400 transition-all rounded-t h-[75%]"></div>
-                </div>
-                <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-2">
-                  <span>08:00</span>
-                  <span>12:00</span>
-                  <span>16:00</span>
-                  <span>Maintenant</span>
+                <div class="text-right">
+                  <span class="text-accent-400 font-semibold">5,190 req/s</span>
+                  <div class="text-[10px] text-slate-500">Chiffrement AES-256</div>
                 </div>
               </div>
 
-              <!-- Terminal Status -->
-              <div class="p-2.5 rounded-lg bg-black/60 font-mono text-[11px] text-slate-300 flex items-center justify-between border border-slate-800/80">
-                <span class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                  <span>Sentinel Zero-Trust Agent</span>
-                </span>
-                <span class="text-emerald-400">STATUS: PROTECTED</span>
+              <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                <div>
+                  <div class="text-slate-300 font-medium">Oracle NetSuite ERP</div>
+                  <div class="text-[11px] text-slate-500">Réconciliation comptable temps réel</div>
+                </div>
+                <div class="text-right">
+                  <span class="text-brand-400 font-semibold">3,850 evt/s</span>
+                  <div class="text-[10px] text-slate-500">Latence 11ms</div>
+                </div>
               </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>Chiffrement matériel HSM actif</span>
+              </div>
+              <span class="font-mono text-slate-500">Nantes DC1</span>
             </div>
           </div>
         </div>
@@ -272,112 +241,138 @@
       </div>
     </section>
 
-    <!-- ==================== SOLUTIONS SECTION ==================== -->
+    <!-- ==================== SECTION CLIENTS PARTENAIRES ==================== -->
+    <section class="py-12 border-y border-slate-800/80 bg-slate-950/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p class="text-center text-xs font-mono uppercase tracking-widest text-slate-400 mb-8">
+          La plateforme de référence choisie par les leaders de l'industrie et des services
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 items-center opacity-70">
+          <div class="flex items-center justify-center font-bold text-slate-400 tracking-wider text-sm hover:text-white transition-colors">
+            AEROTECH SOLUTIONS
+          </div>
+          <div class="flex items-center justify-center font-bold text-slate-400 tracking-wider text-sm hover:text-white transition-colors">
+            BANQUE SAINT-HONORÉ
+          </div>
+          <div class="flex items-center justify-center font-bold text-slate-400 tracking-wider text-sm hover:text-white transition-colors">
+            ALLIANCE BTP
+          </div>
+          <div class="flex items-center justify-center font-bold text-slate-400 tracking-wider text-sm hover:text-white transition-colors">
+            LOGIS-PHARMA
+          </div>
+          <div class="flex items-center justify-center font-bold text-slate-400 tracking-wider text-sm hover:text-white transition-colors">
+            GLOBAL ENERGIES
+          </div>
+          <div class="flex items-center justify-center font-bold text-slate-400 tracking-wider text-sm hover:text-white transition-colors">
+            RETAIL GROUP EUR
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION SOLUTIONS & ARCHITECTURE ==================== -->
     <section id="solutions" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-        <h2 class="text-xs uppercase font-mono tracking-widest text-cyan-400">Solutions Entreprise</h2>
-        <p class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Une suite technologique conçue pour les architectures critiques</p>
-        <p class="text-slate-400 text-sm sm:text-base">De la captation des données ERP à l'analyse prédictive, nos modules sécurisent l'ensemble du cycle décisionnel.</p>
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs uppercase font-mono tracking-widest text-accent-400">Solutions Entreprise</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-2">
+          Conçu pour les environnements applicatifs les plus exigeants
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base mt-4 leading-relaxed">
+          Nos connecteurs natifs certifiés éliminent les silos de données et garantissent la réconciliation de vos systèmes critiques en continu.
+        </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
         <!-- Carte 1 -->
-        <div class="glass-card rounded-2xl p-7 hover:border-brand-500/60 transition-all duration-300 group flex flex-col justify-between">
+        <div class="glass-card rounded-2xl p-8 border border-slate-800 hover:border-slate-700 transition-all duration-300 flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400 mb-6 group-hover:scale-110 transition-transform">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <div class="w-12 h-12 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400 mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Nexis Connect ERP</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-6">
-              Connecteurs natifs bidirectionnels vers SAP S/4HANA, Microsoft Dynamics et Salesforce avec garanties ACID et chiffrement bout en bout.
+            <h3 class="text-xl font-bold text-white mb-2">Connecteurs ERP Universels</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Interconnexion sans friction avec vos progiciels de gestion intégrés (SAP S/4HANA, Microsoft Dynamics 365, Salesforce). Synchronisation temps réel par file de messages asynchrone Kafka.
             </p>
           </div>
-          <div class="pt-4 border-t border-slate-800/80 flex flex-wrap gap-2">
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">SAP NetWeaver</span>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">Kafka Streaming</span>
+          <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs font-mono text-accent-400">
+            <span>Certifié SAP Integration</span> &rarr;
           </div>
         </div>
 
         <!-- Carte 2 -->
-        <div class="glass-card rounded-2xl p-7 hover:border-cyan-500/60 transition-all duration-300 group flex flex-col justify-between relative">
-          <div class="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-cyan-500 text-slate-950 font-bold uppercase tracking-wider">
-            Flagship
-          </div>
+        <div class="glass-card rounded-2xl p-8 border border-slate-800 hover:border-slate-700 transition-all duration-300 flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+            <div class="w-12 h-12 rounded-xl bg-accent-500/10 border border-accent-500/30 flex items-center justify-center text-accent-400 mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Nexis DataLake Engine</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-6">
-              Moteur d'indexation ultra-rapide capable d'agréger plusieurs téraoctets par jour avec requêtage SQL temps réel sans ralentissement opérationnel.
+            <h3 class="text-xl font-bold text-white mb-2">Data Lake & Moteur Analytique</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Moteur distribué basé sur DuckDB et Apache Arrow. Exécution de requêtes analytiques complexes sur plusieurs téraoctets de données financières et logistiques avec une latence sub-seconde.
             </p>
           </div>
-          <div class="pt-4 border-t border-slate-800/80 flex flex-wrap gap-2">
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">Apache Iceberg</span>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">ClickHouse</span>
+          <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs font-mono text-accent-400">
+            <span>Sub-second queries</span> &rarr;
           </div>
         </div>
 
         <!-- Carte 3 -->
-        <div class="glass-card rounded-2xl p-7 hover:border-emerald-500/60 transition-all duration-300 group flex flex-col justify-between">
+        <div class="glass-card rounded-2xl p-8 border border-slate-800 hover:border-slate-700 transition-all duration-300 flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Nexis Sentinel Guard</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-6">
-              Supervision de la conformité, gouvernance IAM stricte, et détection d'anomalies comportementales sur les accès API et transactions sensibles.
+            <h3 class="text-xl font-bold text-white mb-2">Architecture Zero-Trust & RGPD</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Chiffrement de bout en bout avec gestion dédiée des clés de chiffrement (BYOK). Données hébergées exclusivement au sein de datacenters souverains français certifiés SecNumCloud.
             </p>
           </div>
-          <div class="pt-4 border-t border-slate-800/80 flex flex-wrap gap-2">
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">FIDO2 / SSO SAML</span>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300">SecNumCloud Ready</span>
+          <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs font-mono text-accent-400">
+            <span>Souveraineté des données</span> &rarr;
           </div>
         </div>
+
       </div>
     </section>
 
-    <!-- ==================== SECTION ÉQUIPE & OSINT ==================== -->
+    <!-- ==================== SECTION ÉQUIPE & LEADERSHIP ==================== -->
     <section id="team" class="py-24 px-4 sm:px-6 lg:px-8 bg-slate-900/40 border-y border-slate-800/80">
       <div class="max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono mb-3">
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <span>Vecteur de reconnaissance OSINT - Données Publiques</span>
-            </div>
-            <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Gouvernance & Personnels Clés</h2>
+            <span class="text-xs uppercase font-mono tracking-widest text-brand-400">Gouvernance & Équipes</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1">L'équipe dirigeante & technique</h2>
             <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-xl">
-              Consultez notre organigramme exécutif et nos équipes d'ingénierie basées à Nantes. Structure officielle d'adresses : <span class="font-mono text-cyan-400">prenom.nom@nexis-cloud.fr</span>
+              Nos ingénieurs et experts métiers opèrent depuis notre siège nantais pour garantir l'excellence opérationnelle et la sécurité de vos données.
             </p>
           </div>
 
           <!-- Filtres par département -->
           <div class="flex flex-wrap gap-2" id="departmentFilters">
-            <button onclick="filterTeam('all')" class="team-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-600 text-white transition-all" data-dept="all">Tous</button>
-            <button onclick="filterTeam('rh')" class="team-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all" data-dept="rh">RH & Recrutement</button>
-            <button onclick="filterTeam('tech')" class="team-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all" data-dept="tech">R&D / Ingénierie</button>
-            <button onclick="filterTeam('sec')" class="team-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all" data-dept="sec">Cybersécurité</button>
+            <button onclick="filterTeam('all')" class="team-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-brand-600 text-white transition-all" data-dept="all">Tous</button>
+            <button onclick="filterTeam('rh')" class="team-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all" data-dept="rh">RH & Recrutement</button>
+            <button onclick="filterTeam('tech')" class="team-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all" data-dept="tech">R&D / Cloud</button>
+            <button onclick="filterTeam('sec')" class="team-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all" data-dept="sec">Cybersécurité</button>
           </div>
         </div>
 
         <!-- Grille des cartes des collaborateurs -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="teamGrid">
           
-          <!-- Collaborateur 1 : DRH -->
+          <!-- Collaborateur 1 : Marc Lambert -->
           <div class="team-card glass-card rounded-2xl p-5 border border-slate-800 hover:border-slate-700 transition-all duration-300 flex flex-col justify-between" data-dept="rh">
             <div>
               <div class="relative w-full aspect-square rounded-xl overflow-hidden mb-4 bg-slate-800">
                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Marc Lambert" class="w-full h-full object-cover">
-                <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur text-[10px] font-mono text-slate-300 border border-slate-700">Direction</div>
+                <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur text-[10px] font-mono text-slate-300 border border-slate-700">Comex</div>
               </div>
               <h3 class="text-lg font-bold text-white">Marc Lambert</h3>
               <p class="text-brand-400 text-xs font-medium mt-0.5">Directeur des Ressources Humaines</p>
-              <p class="text-slate-400 text-xs mt-3 line-clamp-2">Garant de la culture d'entreprise, des recrutements de cadres et de la conformité sociale.</p>
+              <p class="text-slate-400 text-xs mt-3 leading-relaxed">Pilote la stratégie des talents, la marque employeur et l'accompagnement humain des équipes en forte croissance.</p>
               
               <div class="mt-4 pt-3 border-t border-slate-800/80">
-                <div class="text-[11px] text-slate-500 font-mono">Contact professionnel</div>
-                <button onclick="copyToClipboard('marc.lambert@nexis-cloud.fr', 'E-mail de Marc copié !')" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 mt-1 group">
+                <div class="text-[11px] text-slate-500 font-mono">E-mail professionnel</div>
+                <button onclick="copyToClipboard('marc.lambert@nexis-cloud.fr', 'Adresse e-mail copiée')" class="text-xs font-mono text-accent-400 hover:text-accent-300 flex items-center gap-1.5 mt-1 group">
                   <span class="truncate">marc.lambert@nexis-cloud.fr</span>
                   <svg class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 </button>
@@ -385,15 +380,15 @@
             </div>
 
             <div class="mt-4 pt-3 flex items-center justify-between">
-              <span class="text-[10px] font-mono text-slate-400">Nantes HQ</span>
-              <button onclick="openMockLinkedIn('Marc Lambert', 'DRH chez Nexis Cloud Solutions', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80')" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0077b5]/20 hover:bg-[#0077b5]/30 text-[#38bdf8] text-xs font-semibold transition-colors border border-[#0077b5]/40">
+              <span class="text-[10px] font-mono text-slate-500">Nantes HQ</span>
+              <button onclick="openLinkedIn('marc')" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0077b5]/15 hover:bg-[#0077b5]/25 text-[#38bdf8] text-xs font-semibold transition-colors border border-[#0077b5]/30">
                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 <span>LinkedIn</span>
               </button>
             </div>
           </div>
 
-          <!-- Collaborateur 2 : Recruteuse -->
+          <!-- Collaborateur 2 : Élodie Vasseur -->
           <div class="team-card glass-card rounded-2xl p-5 border border-slate-800 hover:border-slate-700 transition-all duration-300 flex flex-col justify-between" data-dept="rh">
             <div>
               <div class="relative w-full aspect-square rounded-xl overflow-hidden mb-4 bg-slate-800">
@@ -401,12 +396,12 @@
                 <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur text-[10px] font-mono text-slate-300 border border-slate-700">Talent</div>
               </div>
               <h3 class="text-lg font-bold text-white">Élodie Vasseur</h3>
-              <p class="text-brand-400 text-xs font-medium mt-0.5">Lead Recruteuse & Marque Employeur</p>
-              <p class="text-slate-400 text-xs mt-3 line-clamp-2">Sourcing de profils ingénieurs cloud, DevOps et accompagnement de l'onboarding.</p>
+              <p class="text-brand-400 text-xs font-medium mt-0.5">Lead Talent Acquisition & Culture</p>
+              <p class="text-slate-400 text-xs mt-3 leading-relaxed">Spécialiste du recrutement tech et de l'intégration des profils développeurs, data et cloud.</p>
               
               <div class="mt-4 pt-3 border-t border-slate-800/80">
-                <div class="text-[11px] text-slate-500 font-mono">Contact professionnel</div>
-                <button onclick="copyToClipboard('elodie.vasseur@nexis-cloud.fr', 'E-mail d\'Élodie copié !')" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 mt-1 group">
+                <div class="text-[11px] text-slate-500 font-mono">E-mail professionnel</div>
+                <button onclick="copyToClipboard('elodie.vasseur@nexis-cloud.fr', 'Adresse e-mail copiée')" class="text-xs font-mono text-accent-400 hover:text-accent-300 flex items-center gap-1.5 mt-1 group">
                   <span class="truncate">elodie.vasseur@nexis-cloud.fr</span>
                   <svg class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 </button>
@@ -414,15 +409,15 @@
             </div>
 
             <div class="mt-4 pt-3 flex items-center justify-between">
-              <span class="text-[10px] font-mono text-slate-400">Nantes HQ</span>
-              <button onclick="openMockLinkedIn('Élodie Vasseur', 'Lead Recruiter Tech @ Nexis Cloud Solutions', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80')" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0077b5]/20 hover:bg-[#0077b5]/30 text-[#38bdf8] text-xs font-semibold transition-colors border border-[#0077b5]/40">
+              <span class="text-[10px] font-mono text-slate-500">Nantes HQ</span>
+              <button onclick="openLinkedIn('elodie')" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0077b5]/15 hover:bg-[#0077b5]/25 text-[#38bdf8] text-xs font-semibold transition-colors border border-[#0077b5]/30">
                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 <span>LinkedIn</span>
               </button>
             </div>
           </div>
 
-          <!-- Collaborateur 3 : RSSI -->
+          <!-- Collaborateur 3 : Thomas Renard -->
           <div class="team-card glass-card rounded-2xl p-5 border border-slate-800 hover:border-slate-700 transition-all duration-300 flex flex-col justify-between" data-dept="sec">
             <div>
               <div class="relative w-full aspect-square rounded-xl overflow-hidden mb-4 bg-slate-800">
@@ -431,11 +426,11 @@
               </div>
               <h3 class="text-lg font-bold text-white">Thomas Renard</h3>
               <p class="text-emerald-400 text-xs font-medium mt-0.5">RSSI / Head of Cybersecurity</p>
-              <p class="text-slate-400 text-xs mt-3 line-clamp-2">Responsable de l'infrastructure Zero-Trust, des audits SOC et de la sensibilisation au phishing.</p>
+              <p class="text-slate-400 text-xs mt-3 leading-relaxed">Conçoit la politique Zero-Trust, orchestre les audits de conformité ISO 27001 et le durcissement réseau.</p>
               
               <div class="mt-4 pt-3 border-t border-slate-800/80">
-                <div class="text-[11px] text-slate-500 font-mono">Contact professionnel</div>
-                <button onclick="copyToClipboard('thomas.renard@nexis-cloud.fr', 'E-mail de Thomas copié !')" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 mt-1 group">
+                <div class="text-[11px] text-slate-500 font-mono">E-mail professionnel</div>
+                <button onclick="copyToClipboard('thomas.renard@nexis-cloud.fr', 'Adresse e-mail copiée')" class="text-xs font-mono text-accent-400 hover:text-accent-300 flex items-center gap-1.5 mt-1 group">
                   <span class="truncate">thomas.renard@nexis-cloud.fr</span>
                   <svg class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 </button>
@@ -443,31 +438,28 @@
             </div>
 
             <div class="mt-4 pt-3 flex items-center justify-between">
-              <span class="text-[10px] font-mono text-slate-400">Nantes HQ</span>
-              <button onclick="openMockLinkedIn('Thomas Renard', 'CISO / RSSI - Nexis Cloud Solutions', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80')" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0077b5]/20 hover:bg-[#0077b5]/30 text-[#38bdf8] text-xs font-semibold transition-colors border border-[#0077b5]/40">
+              <span class="text-[10px] font-mono text-slate-500">Nantes HQ</span>
+              <button onclick="openLinkedIn('thomas')" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0077b5]/15 hover:bg-[#0077b5]/25 text-[#38bdf8] text-xs font-semibold transition-colors border border-[#0077b5]/30">
                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 <span>LinkedIn</span>
               </button>
             </div>
           </div>
 
-          <!-- Collaborateur 4 : Développeur Cible Spear Phishing -->
-          <div class="team-card glass-card rounded-2xl p-5 border-2 border-brand-500/40 hover:border-cyan-400 transition-all duration-300 flex flex-col justify-between relative shadow-lg shadow-brand-500/10" data-dept="tech">
-            <div class="absolute -top-3 left-4 px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-brand-500 text-white font-bold tracking-wide">
-              Cible Principale
-            </div>
+          <!-- Collaborateur 4 : Julien Da Silva -->
+          <div class="team-card glass-card rounded-2xl p-5 border border-slate-800 hover:border-slate-700 transition-all duration-300 flex flex-col justify-between" data-dept="tech">
             <div>
-              <div class="relative w-full aspect-square rounded-xl overflow-hidden mb-4 bg-slate-800 mt-2">
+              <div class="relative w-full aspect-square rounded-xl overflow-hidden mb-4 bg-slate-800">
                 <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" alt="Julien Da Silva" class="w-full h-full object-cover">
-                <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur text-[10px] font-mono text-cyan-300 border border-slate-700">Dev Core</div>
+                <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur text-[10px] font-mono text-cyan-300 border border-slate-700">R&D</div>
               </div>
               <h3 class="text-lg font-bold text-white">Julien Da Silva</h3>
-              <p class="text-cyan-400 text-xs font-medium mt-0.5">Ingénieur Cloud & Lead Full-Stack</p>
-              <p class="text-slate-400 text-xs mt-3 line-clamp-2">Architecture micro-services, APIs REST/gRPC et connecteurs ERP temps réel.</p>
+              <p class="text-accent-400 text-xs font-medium mt-0.5">Lead DevOps & Cloud Infrastructure</p>
+              <p class="text-slate-400 text-xs mt-3 leading-relaxed">Responsable des architectures Kubernetes multi-cloud résilientes, des pipelines CI/CD et des connecteurs ERP.</p>
               
               <div class="mt-4 pt-3 border-t border-slate-800/80">
-                <div class="text-[11px] text-slate-500 font-mono">Contact professionnel</div>
-                <button onclick="copyToClipboard('julien.dasilva@nexis-cloud.fr', 'E-mail de Julien copié !')" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 mt-1 group">
+                <div class="text-[11px] text-slate-500 font-mono">E-mail professionnel</div>
+                <button onclick="copyToClipboard('julien.dasilva@nexis-cloud.fr', 'Adresse e-mail copiée')" class="text-xs font-mono text-accent-400 hover:text-accent-300 flex items-center gap-1.5 mt-1 group">
                   <span class="truncate">julien.dasilva@nexis-cloud.fr</span>
                   <svg class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 </button>
@@ -475,8 +467,8 @@
             </div>
 
             <div class="mt-4 pt-3 flex items-center justify-between">
-              <span class="text-[10px] font-mono text-slate-400">Nantes HQ</span>
-              <button onclick="openMockLinkedIn('Julien Da Silva', 'Senior Cloud & DevOps Engineer @ Nexis Cloud Solutions', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80')" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0077b5]/20 hover:bg-[#0077b5]/30 text-[#38bdf8] text-xs font-semibold transition-colors border border-[#0077b5]/40">
+              <span class="text-[10px] font-mono text-slate-500">Nantes HQ</span>
+              <button onclick="openLinkedIn('julien')" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0077b5]/15 hover:bg-[#0077b5]/25 text-[#38bdf8] text-xs font-semibold transition-colors border border-[#0077b5]/30">
                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 <span>LinkedIn</span>
               </button>
@@ -491,74 +483,132 @@
     <section id="careers" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
         <div>
-          <span class="text-xs uppercase font-mono tracking-widest text-brand-400">Nous Recrutons</span>
-          <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight mt-1">Rejoignez l'aventure Nexis Cloud</h2>
-          <p class="text-slate-400 text-sm sm:text-base mt-2">Postes ouverts au bureau de Nantes ou en Full Remote (France / UE).</p>
+          <span class="text-xs uppercase font-mono tracking-widest text-accent-400">Rejoindre l'aventure</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1">Opportunités ouvertes</h2>
+          <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-xl">
+            Nous recrutons des talents passionnés par la haute disponibilité, l'architecture cloud souveraine et l'ingénierie des données à grande échelle.
+          </p>
         </div>
-        <div class="text-xs font-mono text-slate-400 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800">
-          Candidatures directes : <span class="text-brand-400">recrutement@nexis-cloud.fr</span>
+        <div class="text-xs font-mono text-slate-400">
+          Candidatures spontanées : <span class="text-accent-400 font-semibold">recrutement@nexis-cloud.fr</span>
         </div>
       </div>
 
       <div class="space-y-4">
+        
         <!-- Job 1 -->
-        <div class="glass-card rounded-2xl p-6 hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div class="space-y-2">
-            <div class="flex flex-wrap items-center gap-2">
-              <h3 class="text-lg font-bold text-white">Ingénieur Cloud & DevOps Senior</h3>
-              <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 text-xs font-mono border border-emerald-800">CDI</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-xs font-mono">Nantes / Remote</span>
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-3">
+              <h3 class="text-base font-bold text-white">Senior Cloud Infrastructure & Kubernetes Engineer</h3>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-brand-500/10 text-brand-400 border border-brand-500/30">CDI</span>
             </div>
-            <p class="text-slate-400 text-sm max-w-2xl">Supervision des clusters Kubernetes, déploiement d'observabilité Grafana/Prometheus et durcissement des clusters de production.</p>
-            <div class="flex flex-wrap gap-1.5 pt-1">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Terraform</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Kubernetes</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">AWS / GCP</span>
+            <p class="text-xs text-slate-400">Pôle Plateforme • Nantes (Hybride 2j/sem) • Salaire selon profil (58k - 72k€)</p>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">Kubernetes</span>
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">Terraform</span>
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">Go</span>
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">Kafka</span>
             </div>
           </div>
-          <button onclick="applyJob('Ingénieur Cloud & DevOps Senior')" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white transition-all whitespace-nowrap">
-            Postuler à l'offre
-          </button>
+          <div>
+            <button onclick="applyJob('Senior Cloud Infrastructure & Kubernetes Engineer')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white transition-colors border border-slate-700">
+              Postuler à l'offre
+            </button>
+          </div>
         </div>
 
         <!-- Job 2 -->
-        <div class="glass-card rounded-2xl p-6 hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div class="space-y-2">
-            <div class="flex flex-wrap items-center gap-2">
-              <h3 class="text-lg font-bold text-white">Développeur Backend Go / Rust (Data Engines)</h3>
-              <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 text-xs font-mono border border-emerald-800">CDI</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-xs font-mono">Nantes</span>
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-3">
+              <h3 class="text-base font-bold text-white">Account Executive Enterprise SaaS (Grands Comptes)</h3>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">CDI</span>
             </div>
-            <p class="text-slate-400 text-sm max-w-2xl">Conception des pipelines ETL temps réel et des connecteurs haute vélocité vers les systèmes transactionnels bancaires et ERP.</p>
-            <div class="flex flex-wrap gap-1.5 pt-1">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Golang</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">gRPC</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Kafka</span>
+            <p class="text-xs text-slate-400">Pôle Commercial • Paris / Nantes • Package attractif fixe + variable non plafonné</p>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">SaaS B2B</span>
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">Écosystème ERP</span>
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">Vente complexe</span>
             </div>
           </div>
-          <button onclick="applyJob('Développeur Backend Go / Rust')" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white transition-all whitespace-nowrap">
-            Postuler à l'offre
-          </button>
+          <div>
+            <button onclick="applyJob('Account Executive Enterprise SaaS')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white transition-colors border border-slate-700">
+              Postuler à l'offre
+            </button>
+          </div>
         </div>
 
         <!-- Job 3 -->
-        <div class="glass-card rounded-2xl p-6 hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div class="space-y-2">
-            <div class="flex flex-wrap items-center gap-2">
-              <h3 class="text-lg font-bold text-white">Ingénieur Sécurité & Pentester Interne</h3>
-              <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 text-xs font-mono border border-emerald-800">CDI</span>
-              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-xs font-mono">Nantes / Hybride</span>
+        <div class="glass-card p-6 rounded-2xl border border-slate-800 hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-3">
+              <h3 class="text-base font-bold text-white">Ingénieur Sécurité Applicative & Cloud (SecOps)</h3>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-brand-500/10 text-brand-400 border border-brand-500/30">CDI</span>
             </div>
-            <p class="text-slate-400 text-sm max-w-2xl">Évaluations régulières de sécurité (Red Team / Blue Team), audits de code et campagnes de sensibilisation à l'ingénierie sociale.</p>
-            <div class="flex flex-wrap gap-1.5 pt-1">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Offensive Security</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">ISO 27001</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">MFA / SAML</span>
+            <p class="text-xs text-slate-400">Pôle RSSI • Nantes • Salaire selon expérience (52k - 68k€)</p>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">ISO 27001</span>
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">Zero-Trust</span>
+              <span class="px-2 py-0.5 bg-slate-900 text-slate-400 rounded text-[11px] font-mono">SIEM / IAM</span>
             </div>
           </div>
-          <button onclick="applyJob('Ingénieur Sécurité & Pentester')" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white transition-all whitespace-nowrap">
-            Postuler à l'offre
-          </button>
+          <div>
+            <button onclick="applyJob('Ingénieur Sécurité Applicative & Cloud')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white transition-colors border border-slate-700">
+              Postuler à l'offre
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECTION CONTACT ==================== -->
+    <section id="contact" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 border border-slate-800 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-6 space-y-4">
+          <span class="text-xs uppercase font-mono tracking-widest text-accent-400">Planifier un échange</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Accélérez l'intégration de vos flux ERP</h2>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Nos directeurs techniques et architectes solutions vous accompagnent dans le dimensionnement de vos connecteurs et la sécurisation de vos pipelines.
+          </p>
+          <div class="space-y-2 pt-3 text-xs font-mono text-slate-300">
+            <div class="flex items-center gap-2">
+              <span class="text-accent-400 font-bold">Siège :</span> 14 Rue de la Raffinerie, 44100 Nantes, France
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-accent-400 font-bold">Standard :</span> +33 (0)2 40 92 18 40
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-accent-400 font-bold">Relations Entreprises :</span> contact@nexis-cloud.fr
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6">
+          <form onsubmit="handleContactSubmit(event)" class="space-y-4 bg-slate-950/80 p-6 rounded-2xl border border-slate-800">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Nom complet</label>
+                <input type="text" required placeholder="Alexandre Martin" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:outline-none focus:border-accent-400">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">E-mail professionnel</label>
+                <input type="email" required placeholder="nom@entreprise.fr" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:outline-none focus:border-accent-400">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Environnement ERP concerné</label>
+              <input type="text" placeholder="Ex: SAP S/4HANA Cloud, Salesforce Enterprise" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:outline-none focus:border-accent-400">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Détails de votre infrastructure ou projet</label>
+              <textarea rows="3" placeholder="Décrivez succinctement vos volumes et besoins d'interconnexion..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:outline-none focus:border-accent-400"></textarea>
+            </div>
+            <button type="submit" class="w-full py-3 rounded-xl text-xs font-semibold bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white shadow-lg transition-all">
+              Transmettre la demande d'évaluation
+            </button>
+          </form>
         </div>
       </div>
     </section>
@@ -566,16 +616,18 @@
   </main>
 
   <!-- ==================== FOOTER ==================== -->
-  <footer class="border-t border-slate-800 bg-slate-950/90 text-slate-400 text-xs py-14 px-4 sm:px-6 lg:px-8">
+  <footer class="border-t border-slate-800 bg-slate-950/95 text-slate-400 text-xs py-14 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+      
       <!-- Col 1 -->
       <div class="space-y-3">
         <div class="text-base font-bold text-white flex items-center gap-2">
-          Nexis <span class="text-cyan-400">Cloud Solutions</span>
+          NEXIS <span class="text-accent-400">CLOUD SOLUTIONS</span>
         </div>
         <p class="text-slate-400 leading-relaxed">
-          SAS au capital de 150 000 €<br>
-          Hébergement souverain & interconnectivité ERP haute disponibilité.
+          Nexis Cloud Solutions SAS au capital de 150 000 €<br>
+          RCS Nantes 892 411 904 • SIRET 892 411 904 00028<br>
+          N° TVA Intracommunautaire : FR 48 892411904
         </p>
         <p class="text-slate-500 font-mono">14 Rue de la Raffinerie, 44100 Nantes, France</p>
       </div>
@@ -584,33 +636,34 @@
       <div>
         <h4 class="text-white font-semibold text-sm mb-3">Plateforme</h4>
         <ul class="space-y-2">
-          <li><a href="#solutions" class="hover:text-cyan-400 transition-colors">Nexis Connect ERP</a></li>
-          <li><a href="#solutions" class="hover:text-cyan-400 transition-colors">DataLake Engine</a></li>
-          <li><a href="#solutions" class="hover:text-cyan-400 transition-colors">Sentinel Zero-Trust</a></li>
-          <li><a href="javascript:void(0)" onclick="openSsoModal()" class="hover:text-cyan-400 transition-colors">Portail Collaborateur SSO</a></li>
+          <li><a href="#solutions" class="hover:text-accent-400 transition-colors">Connecteurs ERP Universels</a></li>
+          <li><a href="#solutions" class="hover:text-accent-400 transition-colors">Moteur Analytique Haute Performance</a></li>
+          <li><a href="#solutions" class="hover:text-accent-400 transition-colors">Architecture Zero-Trust & Chiffrement</a></li>
+          <li><a href="#solutions" class="hover:text-accent-400 transition-colors">Rapports de Conformité</a></li>
         </ul>
       </div>
 
       <!-- Col 3 -->
       <div>
-        <h4 class="text-white font-semibold text-sm mb-3">Gouvernance & Conformité</h4>
+        <h4 class="text-white font-semibold text-sm mb-3">Conformité & Légal</h4>
         <ul class="space-y-2">
-          <li><a href="#team" class="hover:text-cyan-400 transition-colors">Organigramme & Équipe</a></li>
-          <li><a href="javascript:void(0)" onclick="showToast('Politique de confidentialité RGPD conforme aux normes CNIL', 'bg-cyan-400')" class="hover:text-cyan-400 transition-colors">Protection des données (RGPD)</a></li>
-          <li><a href="javascript:void(0)" onclick="showToast('Certification ISO/IEC 27001:2022 renouvelée en 2026', 'bg-emerald-400')" class="hover:text-cyan-400 transition-colors">Certification ISO 27001</a></li>
-          <li><a href="javascript:void(0)" onclick="showToast('Programme de Bug Bounty privé géré par Thomas Renard (RSSI)', 'bg-brand-400')" class="hover:text-cyan-400 transition-colors">Rapport de Vulnérabilité</a></li>
+          <li><a href="javascript:void(0)" onclick="showToast('Politique de confidentialité conforme aux normes CNIL et RGPD', 'bg-accent-400')" class="hover:text-accent-400 transition-colors">Protection des données (RGPD)</a></li>
+          <li><a href="javascript:void(0)" onclick="showToast('Rapports d\'audit SOC 2 Type II disponibles sous accord NDA', 'bg-emerald-400')" class="hover:text-accent-400 transition-colors">Certification ISO 27001 & SOC 2</a></li>
+          <li><a href="javascript:void(0)" onclick="showToast('Hébergement certifié SecNumCloud et ISO 27001 en France', 'bg-brand-400')" class="hover:text-accent-400 transition-colors">Souveraineté des données</a></li>
+          <li><a href="javascript:void(0)" onclick="showToast('Conditions Générales de Vente et d\'Utilisation SaaS', 'bg-slate-400')" class="hover:text-accent-400 transition-colors">Mentions légales & CGU</a></li>
         </ul>
       </div>
 
       <!-- Col 4 -->
       <div class="space-y-3">
-        <h4 class="text-white font-semibold text-sm">Simulation Académique</h4>
-        <p class="text-slate-500 leading-relaxed text-[11px]">
-          Ce portail est un environnement pédagogique d'évaluation en ingénierie sociale et cybersécurité. Aucune transaction financière réelle n'y est opérée.
+        <h4 class="text-white font-semibold text-sm">Disponibilité Opérationnelle</h4>
+        <p class="text-slate-400 leading-relaxed text-[11px]">
+          Tous nos pipelines de données intègrent une réplication multi-zones et une supervision continue 24/7/365.
         </p>
         <div class="pt-2">
-          <span class="inline-block px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-[10px] font-mono text-slate-400">
-            ID Cible : NEXIS-FR-44
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-[10px] font-mono text-emerald-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            Tous les systèmes opérationnels (Nantes DC1)
           </span>
         </div>
       </div>
@@ -619,135 +672,411 @@
     <div class="max-w-7xl mx-auto pt-8 mt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-slate-500 gap-4">
       <div>© 2026 Nexis Cloud Solutions SAS. Tous droits réservés.</div>
       <div class="flex items-center gap-4 text-slate-400">
-        <button onclick="openMockLinkedIn('Nexis Cloud Solutions', 'Entreprise Tech B2B (Page Officielle)', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80')" class="hover:text-cyan-400 transition-colors flex items-center gap-1">
+        <button onclick="openLinkedIn('company')" class="hover:text-accent-400 transition-colors flex items-center gap-1.5">
           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-          <span>LinkedIn Entreprise</span>
+          <span>Page Entreprise LinkedIn</span>
         </button>
       </div>
     </div>
   </footer>
 
-  <!-- ==================== MODAL 1 : ESPACE COLLABORATEUR (SSO LOGIN) ==================== -->
-  <!-- Cette mire simule le portail interne qui sert de référence pour le clonage et la démonstration -->
-  <div id="ssoModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300">
-    <div class="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl glow-cyan">
-      
-      <!-- Fermeture -->
-      <button onclick="closeSsoModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-
-      <!-- En-tête SSO -->
-      <div class="text-center mb-6">
-        <div class="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600 to-cyan-500 p-0.5 flex items-center justify-center mb-3">
-          <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-            <svg class="w-6 h-6 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
-          </div>
-        </div>
-        <h3 class="text-xl font-bold text-white">Nexis Identity Gate</h3>
-        <p class="text-xs text-slate-400 mt-1 font-mono">auth.internal.nexis-cloud.fr</p>
-      </div>
-
-      <!-- Formulaire de démonstration -->
-      <form onsubmit="handleSsoSubmit(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1.5">Identifiant d'entreprise (E-mail)</label>
-          <div class="relative">
-            <input type="email" id="ssoEmail" required placeholder="julien.dasilva@nexis-cloud.fr" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-white text-sm focus:outline-none focus:border-cyan-400 transition-colors">
-            <span class="absolute right-3 top-2.5 text-xs font-mono text-slate-500">@nexis-cloud.fr</span>
+  <!-- ==================== INTERFACE LINKEDIN IMMERSIVE (OSINT) ==================== -->
+  <div id="linkedinModal" class="fixed inset-0 z-50 hidden bg-[#000000]/70 backdrop-blur-sm overflow-y-auto font-sans antialiased">
+    
+    <!-- LinkedIn Top Navbar Cloned -->
+    <div class="sticky top-0 z-50 bg-white border-b border-[#e0e0e0] shadow-sm">
+      <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+        
+        <!-- Logo & Search Bar -->
+        <div class="flex items-center gap-3 flex-1 max-w-md">
+          <button onclick="openLinkedIn('company')" class="text-[#0a66c2] hover:opacity-90 flex-shrink-0" title="Accueil Entreprise">
+            <svg class="w-9 h-9 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          </button>
+          <div class="relative w-full">
+            <svg class="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" id="linkedinSearchInput" placeholder="Recherche (ex: Nexis Cloud Solutions, Julien Da Silva...)" value="Nexis Cloud Solutions" class="w-full pl-9 pr-4 py-1.5 text-xs bg-[#edf3f8] border border-transparent rounded focus:outline-none focus:bg-white focus:border-gray-400 text-gray-800 placeholder-gray-500">
           </div>
         </div>
 
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <label class="block text-xs font-medium text-slate-300">Mot de passe du domaine</label>
-            <span class="text-[11px] text-brand-400 hover:underline cursor-pointer" onclick="showToast('Rapprochez-vous du support de Thomas Renard (RSSI)', 'bg-amber-400')">Oublié ?</span>
-          </div>
-          <input type="password" id="ssoPassword" required placeholder="••••••••••••" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-white text-sm focus:outline-none focus:border-cyan-400 transition-colors">
+        <!-- Navigation Icons -->
+        <div class="flex items-center gap-1 sm:gap-6 text-gray-500 text-[11px]">
+          <button onclick="openLinkedIn('company')" class="flex flex-col items-center hover:text-black py-1 px-1 border-b-2 border-[#0a66c2] text-black">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span class="hidden sm:inline">Accueil</span>
+          </button>
+          <button onclick="switchCompanyTab('people')" class="flex flex-col items-center hover:text-black py-1 px-1">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span class="hidden sm:inline">Réseau</span>
+          </button>
+          <button onclick="switchCompanyTab('jobs')" class="flex flex-col items-center hover:text-black py-1 px-1">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+            <span class="hidden sm:inline">Emplois</span>
+          </button>
+          <div class="h-8 w-px bg-gray-200 hidden sm:block"></div>
+          
+          <!-- Bouton Fermer / Retour au site web -->
+          <button onclick="closeLinkedIn()" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-full transition-all shadow-sm">
+            <span>&times; Retour au site Nexis</span>
+          </button>
         </div>
 
-        <!-- Alerte Mode Démo Sécurité -->
-        <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-[11px] text-slate-400 flex items-start gap-2">
-          <svg class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span>Portail d'authentification unique (SSO) fédéré avec Okta / SAML 2.0. Vos identifiants sont vérifiés par l'annuaire LDAP de Nexis Cloud.</span>
-        </div>
-
-        <!-- Bouton Soumission -->
-        <button type="submit" class="w-full py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-brand-600 to-cyan-500 hover:from-brand-500 hover:to-cyan-400 text-white shadow-lg shadow-brand-500/25 transition-all">
-          Se connecter à l'espace interne
-        </button>
-      </form>
-
-      <!-- Message retour de connexion -->
-      <div id="ssoFeedback" class="hidden mt-4 p-3 rounded-xl bg-cyan-950/50 border border-cyan-800 text-xs text-cyan-300 text-center font-mono">
-        <!-- Message injecté en JS -->
       </div>
     </div>
-  </div>
 
-  <!-- ==================== MODAL 2 : SIMULATION DU PROFIL LINKEDIN ==================== -->
-  <div id="linkedInModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300">
-    <div class="relative w-full max-w-lg bg-[#1b1f23] border border-slate-700 rounded-2xl overflow-hidden shadow-2xl text-slate-100">
-      
-      <!-- LinkedIn Header Fictif -->
-      <div class="h-24 bg-gradient-to-r from-[#0077b5] to-slate-800 relative">
-        <button onclick="closeLinkedInModal()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/30 p-1.5 rounded-full">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-
-      <div class="px-6 pb-6 pt-0 relative">
-        <!-- Avatar rond -->
-        <div class="relative -top-12 mb-[-36px] flex items-end justify-between">
-          <img id="modalLiPhoto" src="" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-[#1b1f23] object-cover bg-slate-800 shadow-md">
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-1 rounded-full bg-[#0077b5] text-white text-xs font-semibold flex items-center gap-1">
-              <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-              <span>Profil vérifié</span>
-            </span>
-          </div>
-        </div>
-
-        <!-- Informations profil -->
-        <div class="mt-4">
-          <h4 id="modalLiName" class="text-xl font-bold text-white">Nom du Collaborateur</h4>
-          <p id="modalLiTitle" class="text-sm text-slate-300 mt-0.5">Poste chez Nexis Cloud Solutions</p>
-          <p class="text-xs text-slate-400 mt-1 flex items-center gap-1 font-mono">
-            <span>Région de Nantes, France</span> • <span class="text-cyan-400">500+ relations</span>
-          </p>
-
-          <!-- Encadré Prétexte Spear Phishing -->
-          <div class="mt-5 p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-300 space-y-2">
-            <div class="font-semibold text-amber-300 flex items-center gap-1.5">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-              <span>Contexte pour le scénario d'attaque :</span>
+    <!-- LinkedIn Body Container -->
+    <div class="bg-[#f3f2ef] min-h-[calc(100vh-56px)] py-6 px-4">
+      <div class="max-w-5xl mx-auto">
+        
+        <!-- VUE 1 : PAGE ENTREPRISE NEXIS CLOUD SOLUTIONS -->
+        <div id="linkedinCompanyView" class="space-y-4">
+          
+          <!-- Header Card Entreprise -->
+          <div class="bg-white rounded-xl border border-[#d0d7de] overflow-hidden shadow-sm">
+            <!-- Bannière LinkedIn -->
+            <div class="h-44 sm:h-56 bg-gradient-to-r from-[#1e1b4b] via-[#312e81] to-[#0284c7] relative p-6 flex flex-col justify-end">
+              <div class="text-white/80 font-mono text-xs uppercase tracking-widest">Connecteurs SaaS & Analytique Cloud</div>
+              <div class="text-white font-bold text-xl sm:text-2xl">Moderniser l'ERP sans compromis de souveraineté.</div>
             </div>
-            <p class="text-slate-400 leading-relaxed text-[11px]">
-              Ce profil public permet à l'attaquant d'identifier les technologies manipulées par le collaborateur et d'envoyer un message ciblé prétextant une proposition d'embauche ou un message direct urgent.
-            </p>
+
+            <!-- Identité & Logo -->
+            <div class="px-6 pb-6 relative">
+              <div class="relative flex flex-col sm:flex-row sm:items-end justify-between -mt-16 sm:-mt-20 gap-4">
+                
+                <!-- Logo Carré -->
+                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-xl bg-[#0f172a] border-4 border-white shadow-md p-2 flex items-center justify-center flex-shrink-0">
+                  <div class="text-center">
+                    <svg class="w-10 h-10 text-[#38bdf8] mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                    </svg>
+                    <span class="text-white font-black text-xs tracking-tighter">NEXIS<span class="text-[#38bdf8]">.</span></span>
+                  </div>
+                </div>
+
+                <!-- Boutons d'interaction LinkedIn -->
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                  <button class="px-4 py-1.5 rounded-full bg-[#0a66c2] text-white text-xs font-semibold hover:bg-[#004182] flex items-center gap-1.5 transition-colors">
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    <span>Suivre</span>
+                  </button>
+                  <a href="#hero" onclick="closeLinkedIn()" class="px-4 py-1.5 rounded-full border border-[#0a66c2] text-[#0a66c2] text-xs font-semibold hover:bg-[#ebf4fd] transition-colors">
+                    Consulter le site web
+                  </a>
+                </div>
+              </div>
+
+              <!-- Infos principales -->
+              <div class="mt-4">
+                <div class="flex items-center gap-2">
+                  <h1 class="text-2xl font-bold text-gray-900">Nexis Cloud Solutions</h1>
+                  <span class="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] font-semibold">Page entreprise vérifiée</span>
+                </div>
+                <p class="text-xs text-gray-600 mt-1">Infrastructure logicielle unifiée, pipelines de réconciliation ERP et moteur analytique temps réel.</p>
+                <div class="flex flex-wrap items-center gap-y-1 gap-x-3 text-xs text-gray-500 mt-2">
+                  <span>Logiciels informatiques</span>
+                  <span>•</span>
+                  <span>Nantes, Pays de la Loire</span>
+                  <span>•</span>
+                  <span class="text-[#0a66c2] font-semibold cursor-pointer" onclick="switchCompanyTab('people')">45 employés sur LinkedIn</span>
+                  <span>•</span>
+                  <span>3 410 abonnés</span>
+                </div>
+              </div>
+
+              <!-- Onglets de la page entreprise -->
+              <div class="flex items-center gap-6 border-t border-gray-200 mt-6 pt-3 text-xs font-medium text-gray-600">
+                <button onclick="switchCompanyTab('home')" id="tabBtn-home" class="company-tab pb-2 text-[#0a66c2] border-b-2 border-[#0a66c2] font-semibold">Accueil</button>
+                <button onclick="switchCompanyTab('about')" id="tabBtn-about" class="company-tab pb-2 hover:text-black">À propos</button>
+                <button onclick="switchCompanyTab('jobs')" id="tabBtn-jobs" class="company-tab pb-2 hover:text-black">Emplois (3)</button>
+                <button onclick="switchCompanyTab('people')" id="tabBtn-people" class="company-tab pb-2 hover:text-black">Personnes (4)</button>
+              </div>
+
+            </div>
           </div>
 
-          <div class="mt-5 flex gap-3">
-            <button onclick="simulatePhishingMessage()" class="flex-1 py-2 rounded-xl text-xs font-semibold bg-[#0077b5] hover:bg-[#006097] text-white transition-colors">
-              Simuler l'envoi d'inMail ciblé
-            </button>
-            <button onclick="closeLinkedInModal()" class="px-4 py-2 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors">
-              Fermer
-            </button>
+          <!-- CONTENU DES ONGLETS ENTREPRISE -->
+          <div id="companyTabContent">
+            
+            <!-- SOUS-ONGLET 1 : ACCUEIL / POSTS -->
+            <div id="tabContent-home" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+              
+              <!-- Colonne principale (Flux) -->
+              <div class="md:col-span-8 space-y-4">
+                
+                <!-- Post 1 : Bienvenue RSSI Thomas Renard (Révèle l'organigramme & la conformité) -->
+                <div class="bg-white rounded-xl border border-[#d0d7de] p-4 shadow-sm text-xs text-gray-800">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2.5">
+                      <div class="w-10 h-10 rounded-lg bg-[#0f172a] p-1 flex items-center justify-center text-white font-bold text-xs">NCS</div>
+                      <div>
+                        <div class="font-bold text-gray-900 hover:text-[#0a66c2] cursor-pointer" onclick="switchCompanyTab('home')">Nexis Cloud Solutions</div>
+                        <div class="text-[11px] text-gray-500">3 410 abonnés • Il y a 3 semaines • 🌐</div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="leading-relaxed mb-3">
+                    🔒 <strong>Renforcement de notre gouvernance Cybersécurité</strong> : Nous sommes très heureux d'accueillir <span class="text-[#0a66c2] font-semibold cursor-pointer" onclick="openLinkedIn('thomas')">Thomas Renard</span> au poste de RSSI (Head of Cybersecurity) !<br><br>
+                    Après 7 ans passés à piloter la sécurité des architectures bancaires, Thomas prend en charge notre audit de certification <strong>ISO/IEC 27001</strong> et le déploiement de notre politique interne Zero-Trust. Bienvenue dans l'équipe nantaise !
+                  </p>
+                  <div class="bg-[#edf3f8] p-3 rounded-lg border border-gray-200 text-[11px] text-gray-600 mb-3">
+                    📌 <em>Pour toute question liée à notre plan d'assurance sécurité ou nos audits fournisseurs : <span class="font-mono text-gray-800">thomas.renard@nexis-cloud.fr</span></em>
+                  </div>
+                  <div class="flex items-center gap-4 pt-2 border-t border-gray-100 text-gray-500 font-semibold text-[11px]">
+                    <span class="flex items-center gap-1 hover:text-black cursor-pointer">👍 42 J'aime</span>
+                    <span class="flex items-center gap-1 hover:text-black cursor-pointer">💬 6 commentaires</span>
+                  </div>
+                </div>
+
+                <!-- Post 2 : Offre DevOps / Kubernetes (Révèle la stack technique pour l'OSINT) -->
+                <div class="bg-white rounded-xl border border-[#d0d7de] p-4 shadow-sm text-xs text-gray-800">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2.5">
+                      <div class="w-10 h-10 rounded-lg bg-[#0f172a] p-1 flex items-center justify-center text-white font-bold text-xs">NCS</div>
+                      <div>
+                        <div class="font-bold text-gray-900 hover:text-[#0a66c2] cursor-pointer" onclick="switchCompanyTab('home')">Nexis Cloud Solutions</div>
+                        <div class="text-[11px] text-gray-500">3 410 abonnés • Il y a 1 mois • 🌐</div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="leading-relaxed mb-3">
+                    🚀 <strong>Nexis Cloud recrute à Nantes !</strong> Notre infrastructure traite désormais plus de 18 000 événements par seconde sur nos connecteurs SAP et Salesforce.<br><br>
+                    Pour épauler notre pôle R&D mené par <span class="text-[#0a66c2] font-semibold cursor-pointer" onclick="openLinkedIn('julien')">Julien Da Silva</span>, nous recherchons un(e) <strong>Senior Cloud & Kubernetes Engineer</strong>.<br><br>
+                    Stack technique au quotidien : <strong>AWS, Terraform, Kubernetes multi-cluster, Apache Kafka, Go et GitLab CI</strong>.<br>
+                    Processus de candidature direct auprès d'<span class="text-[#0a66c2] font-semibold cursor-pointer" onclick="openLinkedIn('elodie')">Élodie Vasseur</span> (Talent Acquisition).
+                  </p>
+                  <div class="p-3 bg-blue-50/70 border border-blue-200 rounded-lg flex items-center justify-between">
+                    <div>
+                      <div class="font-semibold text-gray-900">Senior Cloud Infrastructure & Kubernetes Engineer</div>
+                      <div class="text-[11px] text-gray-600">Nantes (44) • CDI • Salaire : 58-72k€</div>
+                    </div>
+                    <button onclick="switchCompanyTab('jobs')" class="px-3 py-1 bg-[#0a66c2] text-white rounded text-[11px] font-semibold hover:bg-[#004182]">Voir l'offre</button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Colonne latérale (Infos clés d'entreprise) -->
+              <div class="md:col-span-4 space-y-4">
+                <div class="bg-white rounded-xl border border-[#d0d7de] p-4 shadow-sm text-xs">
+                  <h3 class="font-bold text-gray-900 mb-2">À propos</h3>
+                  <p class="text-gray-600 leading-relaxed mb-3">
+                    Nexis Cloud Solutions unifie les flux ERP hétérogènes des grands comptes européens.
+                  </p>
+                  <div class="space-y-2 text-[11px] border-t border-gray-100 pt-3">
+                    <div><span class="text-gray-400 block">Site Web</span> <span class="text-[#0a66c2] font-medium">nexis-cloud.fr</span></div>
+                    <div><span class="text-gray-400 block">Secteur</span> Logiciels informatiques & Cloud</div>
+                    <div><span class="text-gray-400 block">Taille de l'entreprise</span> 45 employés</div>
+                    <div><span class="text-gray-400 block">Siège social</span> Nantes, Pays de la Loire</div>
+                    <div><span class="text-gray-400 block">Fondation</span> 2021</div>
+                    <div><span class="text-gray-400 block">Format emails standardisé</span> <span class="font-mono text-gray-700 bg-gray-100 px-1 py-0.5 rounded">prenom.nom@nexis-cloud.fr</span></div>
+                  </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-[#d0d7de] p-4 shadow-sm text-xs">
+                  <h3 class="font-bold text-gray-900 mb-2">Membres de l'équipe</h3>
+                  <div class="space-y-2.5">
+                    <div onclick="openLinkedIn('julien')" class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                      <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" class="w-8 h-8 rounded-full object-cover" alt="Julien">
+                      <div>
+                        <div class="font-bold text-gray-900 hover:text-[#0a66c2]">Julien Da Silva</div>
+                        <div class="text-[10px] text-gray-500">Lead DevOps & Cloud</div>
+                      </div>
+                    </div>
+                    <div onclick="openLinkedIn('thomas')" class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" class="w-8 h-8 rounded-full object-cover" alt="Thomas">
+                      <div>
+                        <div class="font-bold text-gray-900 hover:text-[#0a66c2]">Thomas Renard</div>
+                        <div class="text-[10px] text-gray-500">RSSI / Head of Cybersecurity</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- SOUS-ONGLET 2 : À PROPOS -->
+            <div id="tabContent-about" class="hidden bg-white rounded-xl border border-[#d0d7de] p-6 shadow-sm text-xs text-gray-700 space-y-4">
+              <h2 class="text-base font-bold text-gray-900">Présentation générale</h2>
+              <p class="leading-relaxed">
+                Fondée en 2021 à Nantes, Nexis Cloud Solutions accompagne les entreprises industrielles et de services dans l'interconnexion sécurisée de leurs données ERP. Notre moteur analytique hybride permet de traiter des requêtes transactionnelles massives avec une latence sub-seconde tout en répondant aux contraintes les plus rigoureuses du RGPD.
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                <div>
+                  <h3 class="font-bold text-gray-900 mb-1">Siège social</h3>
+                  <p class="text-gray-600">14 Rue de la Raffinerie, 44100 Nantes, France</p>
+                </div>
+                <div>
+                  <h3 class="font-bold text-gray-900 mb-1">Contact général</h3>
+                  <p class="text-gray-600 font-mono">contact@nexis-cloud.fr / recrutement@nexis-cloud.fr</p>
+                </div>
+                <div>
+                  <h3 class="font-bold text-gray-900 mb-1">Effectifs</h3>
+                  <p class="text-gray-600">45 collaborateurs (R&D, Opérations Cloud, Sécurité, Commercial)</p>
+                </div>
+                <div>
+                  <h3 class="font-bold text-gray-900 mb-1">Environnement IT</h3>
+                  <p class="text-gray-600">AWS / Datacenters souverains en France • Google Workspace • Slack Pro</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- SOUS-ONGLET 3 : OFFRES D'EMPLOI -->
+            <div id="tabContent-jobs" class="hidden space-y-3">
+              <div class="bg-white rounded-xl border border-[#d0d7de] p-4 shadow-sm flex items-center justify-between text-xs">
+                <div>
+                  <div class="font-bold text-sm text-gray-900 hover:text-[#0a66c2] cursor-pointer">Senior Cloud Infrastructure & Kubernetes Engineer</div>
+                  <div class="text-gray-500">Nexis Cloud Solutions • Nantes (Hybride) • Il y a 3 semaines</div>
+                  <div class="text-[11px] text-emerald-700 font-medium mt-1">✓ Recruteur actif : Élodie Vasseur</div>
+                </div>
+                <button onclick="openLinkedIn('elodie')" class="px-3.5 py-1.5 border border-[#0a66c2] text-[#0a66c2] rounded-full text-xs font-semibold hover:bg-blue-50">Contacter le recruteur</button>
+              </div>
+
+              <div class="bg-white rounded-xl border border-[#d0d7de] p-4 shadow-sm flex items-center justify-between text-xs">
+                <div>
+                  <div class="font-bold text-sm text-gray-900 hover:text-[#0a66c2] cursor-pointer">Account Executive Enterprise SaaS (Grands Comptes)</div>
+                  <div class="text-gray-500">Nexis Cloud Solutions • Nantes / Paris • Il y a 1 mois</div>
+                  <div class="text-[11px] text-emerald-700 font-medium mt-1">✓ Contact : Marc Lambert</div>
+                </div>
+                <button onclick="openLinkedIn('marc')" class="px-3.5 py-1.5 border border-[#0a66c2] text-[#0a66c2] rounded-full text-xs font-semibold hover:bg-blue-50">Contacter le recruteur</button>
+              </div>
+
+              <div class="bg-white rounded-xl border border-[#d0d7de] p-4 shadow-sm flex items-center justify-between text-xs">
+                <div>
+                  <div class="font-bold text-sm text-gray-900 hover:text-[#0a66c2] cursor-pointer">Ingénieur Sécurité Applicative & Cloud (SecOps)</div>
+                  <div class="text-gray-500">Nexis Cloud Solutions • Nantes • Il y a 5 jours</div>
+                  <div class="text-[11px] text-emerald-700 font-medium mt-1">✓ Équipe : Thomas Renard (RSSI)</div>
+                </div>
+                <button onclick="openLinkedIn('thomas')" class="px-3.5 py-1.5 border border-[#0a66c2] text-[#0a66c2] rounded-full text-xs font-semibold hover:bg-blue-50">Contacter le manager</button>
+              </div>
+            </div>
+
+            <!-- SOUS-ONGLET 4 : PERSONNES / COLLABORATEURS -->
+            <div id="tabContent-people" class="hidden bg-white rounded-xl border border-[#d0d7de] p-6 shadow-sm text-xs">
+              <h2 class="text-base font-bold text-gray-900 mb-4">Employés de Nexis Cloud Solutions sur LinkedIn (4 collaborateurs clés)</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                <div onclick="openLinkedIn('marc')" class="p-3 border border-gray-200 rounded-xl hover:border-[#0a66c2] cursor-pointer transition-all flex items-center gap-3">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="w-12 h-12 rounded-full object-cover">
+                  <div>
+                    <div class="font-bold text-gray-900 text-sm">Marc Lambert</div>
+                    <div class="text-gray-500 text-[11px]">Directeur des Ressources Humaines</div>
+                    <div class="text-gray-400 text-[10px]">Nantes, France • 840 relations</div>
+                  </div>
+                </div>
+
+                <div onclick="openLinkedIn('elodie')" class="p-3 border border-gray-200 rounded-xl hover:border-[#0a66c2] cursor-pointer transition-all flex items-center gap-3">
+                  <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" class="w-12 h-12 rounded-full object-cover">
+                  <div>
+                    <div class="font-bold text-gray-900 text-sm">Élodie Vasseur</div>
+                    <div class="text-gray-500 text-[11px]">Lead Talent Acquisition & Culture</div>
+                    <div class="text-gray-400 text-[10px]">Nantes, France • 1 250 relations</div>
+                  </div>
+                </div>
+
+                <div onclick="openLinkedIn('thomas')" class="p-3 border border-gray-200 rounded-xl hover:border-[#0a66c2] cursor-pointer transition-all flex items-center gap-3">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" class="w-12 h-12 rounded-full object-cover">
+                  <div>
+                    <div class="font-bold text-gray-900 text-sm">Thomas Renard</div>
+                    <div class="text-gray-500 text-[11px]">RSSI / Head of Cybersecurity</div>
+                    <div class="text-gray-400 text-[10px]">Nantes, France • 500+ relations</div>
+                  </div>
+                </div>
+
+                <div onclick="openLinkedIn('julien')" class="p-3 border border-gray-200 rounded-xl hover:border-[#0a66c2] cursor-pointer transition-all flex items-center gap-3">
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" class="w-12 h-12 rounded-full object-cover">
+                  <div>
+                    <div class="font-bold text-gray-900 text-sm">Julien Da Silva</div>
+                    <div class="text-gray-500 text-[11px]">Lead DevOps & Cloud Infrastructure</div>
+                    <div class="text-gray-400 text-[10px]">Nantes, France • 610 relations</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
+
         </div>
-      </div>
 
+        <!-- VUE 2 : PROFIL INDIVIDUEL (JULIEN DA SILVA, THOMAS RENARD, ETC.) -->
+        <div id="linkedinProfileView" class="hidden space-y-4">
+          
+          <!-- Carte Header Profil -->
+          <div class="bg-white rounded-xl border border-[#d0d7de] overflow-hidden shadow-sm">
+            <div id="profileBanner" class="h-36 sm:h-48 bg-gradient-to-r from-slate-800 to-indigo-900 relative"></div>
+            
+            <div class="px-6 pb-6 relative">
+              <div class="relative flex flex-col sm:flex-row sm:items-end justify-between -mt-16 sm:-mt-20 gap-4">
+                <img id="profileImg" src="" alt="Avatar" class="w-32 h-32 rounded-full border-4 border-white object-cover shadow-md bg-white">
+                
+                <div class="flex items-center gap-2">
+                  <button class="px-4 py-1.5 rounded-full bg-[#0a66c2] text-white text-xs font-semibold hover:bg-[#004182]">Se connecter</button>
+                  <button class="px-4 py-1.5 rounded-full border border-gray-400 text-gray-700 text-xs font-semibold hover:bg-gray-100">Message</button>
+                  <button onclick="openLinkedIn('company')" class="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-600 hover:bg-gray-50">Page Nexis</button>
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <div class="flex items-center gap-2">
+                  <h1 id="profileName" class="text-2xl font-bold text-gray-900"></h1>
+                  <span class="text-xs text-gray-400">• 1er</span>
+                </div>
+                <p id="profileHeadline" class="text-xs text-gray-700 mt-1 font-medium"></p>
+                <div class="flex flex-wrap items-center gap-y-1 gap-x-3 text-xs text-gray-500 mt-2">
+                  <span id="profileLocation">Nantes, Pays de la Loire, France</span>
+                  <span>•</span>
+                  <span class="text-[#0a66c2] font-semibold hover:underline cursor-pointer" onclick="openLinkedIn('company')">Nexis Cloud Solutions</span>
+                  <span>•</span>
+                  <span id="profileConnections" class="text-gray-500">500+ relations</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Infos (About) -->
+          <div class="bg-white rounded-xl border border-[#d0d7de] p-6 shadow-sm text-xs text-gray-700">
+            <h2 class="text-base font-bold text-gray-900 mb-2">Infos</h2>
+            <p id="profileAbout" class="leading-relaxed"></p>
+          </div>
+
+          <!-- Section Activité / Dernier Post (Mine d'or OSINT) -->
+          <div class="bg-white rounded-xl border border-[#d0d7de] p-6 shadow-sm text-xs text-gray-700">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-base font-bold text-gray-900">Activité récente</h2>
+              <span class="text-[11px] text-[#0a66c2] font-semibold cursor-pointer">Voir tout</span>
+            </div>
+            <div id="profileRecentPost" class="p-4 bg-gray-50 rounded-xl border border-gray-200">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Section Expérience -->
+          <div class="bg-white rounded-xl border border-[#d0d7de] p-6 shadow-sm text-xs text-gray-700">
+            <h2 class="text-base font-bold text-gray-900 mb-4">Expérience</h2>
+            <div id="profileExperiences" class="space-y-4">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Section Compétences & Formation -->
+          <div class="bg-white rounded-xl border border-[#d0d7de] p-6 shadow-sm text-xs text-gray-700">
+            <h2 class="text-base font-bold text-gray-900 mb-3">Compétences techniques & Certifications</h2>
+            <div id="profileSkills" class="flex flex-wrap gap-2">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
     </div>
   </div>
 
   <!-- ==================== LOGIQUE JAVASCRIPT ==================== -->
   <script>
-    // 1. Gestion des Toast Notifications
+    // 1. Notifications toast
     let toastTimeout;
-    function showToast(message, colorClass = 'bg-cyan-400') {
+    function showToast(message, colorClass = 'bg-accent-400') {
       const toast = document.getElementById('toastNotification');
       const msg = document.getElementById('toastMessage');
       const icon = document.getElementById('toastIcon');
@@ -762,10 +1091,10 @@
       toastTimeout = setTimeout(() => {
         toast.classList.remove('translate-y-0', 'opacity-100');
         toast.classList.add('translate-y-32', 'opacity-0');
-      }, 3500);
+      }, 3200);
     }
 
-    // 2. Copie sécurisée sans bloquer les iFrames
+    // 2. Copie d'e-mail dans le presse-papier
     function copyToClipboard(text, successMsg) {
       const dummy = document.createElement("textarea");
       document.body.appendChild(dummy);
@@ -780,16 +1109,16 @@
       document.body.removeChild(dummy);
     }
 
-    // 3. Filtrage dynamique de l'équipe
+    // 3. Filtrage dynamique par département
     function filterTeam(dept) {
       const cards = document.querySelectorAll('.team-card');
       const buttons = document.querySelectorAll('.team-filter-btn');
 
       buttons.forEach(btn => {
         if (btn.getAttribute('data-dept') === dept) {
-          btn.className = "team-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-600 text-white transition-all";
+          btn.className = "team-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-brand-600 text-white transition-all";
         } else {
-          btn.className = "team-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all";
+          btn.className = "team-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all";
         }
       });
 
@@ -803,66 +1132,174 @@
       });
     }
 
-    // 4. Modales SSO
-    function openSsoModal() {
-      const modal = document.getElementById('ssoModal');
-      modal.classList.remove('hidden');
-    }
-
-    function closeSsoModal() {
-      const modal = document.getElementById('ssoModal');
-      modal.classList.add('hidden');
-      document.getElementById('ssoFeedback').classList.add('hidden');
-    }
-
-    function handleSsoSubmit(e) {
+    // 4. Formulaire commercial
+    function handleContactSubmit(e) {
       e.preventDefault();
-      const email = document.getElementById('ssoEmail').value;
-      const feedback = document.getElementById('ssoFeedback');
-      
-      feedback.classList.remove('hidden');
-      feedback.innerHTML = `
-        <div class="font-bold text-emerald-400">✓ Simulation Mire Légitime</div>
-        <div class="text-[11px] text-slate-300 mt-1">
-          Identifiant testé : <span class="text-white">${email}</span><br>
-          Dans le cadre de l'attaque simulée avec SEToolkit, cette page sert de clone de référence pour capter les identifiants sur la machine attaquante Kali.
-        </div>
-      `;
+      showToast("Votre demande de démonstration a bien été enregistrée par nos équipes.", "bg-emerald-400");
+      e.target.reset();
     }
 
-    // 5. Modale LinkedIn
-    function openMockLinkedIn(name, title, photo) {
-      document.getElementById('modalLiName').innerText = name;
-      document.getElementById('modalLiTitle').innerText = title;
-      document.getElementById('modalLiPhoto').src = photo;
-      document.getElementById('linkedInModal').classList.remove('hidden');
-    }
-
-    function closeLinkedInModal() {
-      document.getElementById('linkedInModal').classList.add('hidden');
-    }
-
-    function simulatePhishingMessage() {
-      closeLinkedInModal();
-      showToast("Scénario amorcé : Un template d'e-mail de notification LinkedIn a été ciblé vers ce profil.", "bg-amber-400");
-    }
-
-    // 6. Action Carrières
+    // 5. Postuler à une offre
     function applyJob(jobTitle) {
-      showToast(`Candidature pour « ${jobTitle} » ouverte. Envoyez votre CV à recrutement@nexis-cloud.fr`, "bg-brand-400");
+      showToast(`Dossier pour « ${jobTitle} » initié. Écrivez à recrutement@nexis-cloud.fr`, "bg-brand-400");
     }
 
-    function triggerDemoToast() {
-      showToast("Demande de démo transmise aux ingénieurs commerciaux de Nexis Cloud.", "bg-cyan-400");
-    }
-
-    // Fermeture des modales avec la touche Échap
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeSsoModal();
-        closeLinkedInModal();
+    // ==================== MOTEUR LINKEDIN SIMULATEUR (OSINT) ====================
+    const linkedInData = {
+      marc: {
+        name: "Marc Lambert",
+        headline: "Directeur des Ressources Humaines @ Nexis Cloud Solutions | People & Culture Lead",
+        location: "Nantes, Pays de la Loire, France",
+        connections: "842 relations",
+        img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+        bannerColor: "from-slate-700 to-indigo-800",
+        about: "Plus de 15 ans d'expérience dans l'accompagnement RH des scale-ups logicielles. À la tête des ressources humaines de Nexis Cloud Solutions depuis 2022, je structure l'on-boarding, l'évolution des compétences techniques et la marque employeur auprès des écoles d'ingénieurs nantaises et parisiennes. Pour tout contact officiel : marc.lambert@nexis-cloud.fr.",
+        recentPost: {
+          date: "Il y a 2 semaines",
+          text: "Très fier de voir grandir la team Nexis ! Nous venons de dépasser le cap des 45 collaborateurs. Un immense merci à nos équipes R&D et Tech qui relèvent des défis techniques majeurs chaque jour. Si vous cherchez un environnement où la souveraineté des données et l'équilibre pro/perso sont une réalité, venez nous voir !"
+        },
+        experiences: [
+          { role: "Directeur des Ressources Humaines", company: "Nexis Cloud Solutions", date: "Janv 2022 - Présent • 4 ans", desc: "Pilotage complet du plan de recrutement tech, politiques de rémunération, gestion prévisionnelle des emplois et compétences." },
+          { role: "Responsable Développement RH", company: "CloudScale Europe", date: "2017 - 2021 • 4 ans", desc: "Recrutement de profils architectes cloud et ingénieurs data." }
+        ],
+        skills: ["Recrutement Tech", "Gestion des Talents", "Politique Salariale", "Marque Employeur", "Droit Social"]
+      },
+      elodie: {
+        name: "Élodie Vasseur",
+        headline: "Lead Talent Acquisition & Culture @ Nexis Cloud Solutions | Recrutement Tech (Kubernetes, Go, Kafka)",
+        location: "Nantes, Pays de la Loire, France",
+        connections: "1 254 relations",
+        img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80",
+        bannerColor: "from-purple-900 to-slate-900",
+        about: "Passionnée par l'écosystème tech, je chasse les meilleurs profils Développeurs, DevOps et Architectes Cloud pour Nexis Cloud Solutions. Je réponds à tous les messages LinkedIn sous 24h. Candidatures directes : elodie.vasseur@nexis-cloud.fr.",
+        recentPost: {
+          date: "Il y a 4 jours",
+          text: "🚨 Tech hiring alert ! Nous ouvrons 3 nouveaux postes en R&D à Nantes : un Senior DevOps, un Ingénieur SecOps et un Account Executive Enterprise. Télétravail hybride avec bureau convivial près de l'île de Nantes. Envoyez-moi un MP ou directement un CV !"
+        },
+        experiences: [
+          { role: "Lead Talent Acquisition", company: "Nexis Cloud Solutions", date: "Mars 2023 - Présent • 2 ans", desc: "Chasse directe sur LinkedIn Recruiter, animation des entretiens RH et suivi des offres d'emploi." },
+          { role: "Tech Recruiter Senior", company: "DigitalTalents Agency", date: "2019 - 2023 • 4 ans", desc: "Sourcing intensif de développeurs Full-Stack et Cloud." }
+        ],
+        skills: ["Sourcing LinkedIn", "Recrutement Développeurs", "Entretien RH", "Onboarding", "Culture d'Entreprise"]
+      },
+      thomas: {
+        name: "Thomas Renard",
+        headline: "RSSI / Head of Cybersecurity @ Nexis Cloud Solutions | CISSP, CISM | Zero-Trust & Cloud Security",
+        location: "Nantes, Pays de la Loire, France",
+        connections: "540 relations",
+        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+        bannerColor: "from-emerald-950 to-slate-900",
+        about: "RSSI chevronné avec 12 ans d'expérience dans la sécurisation des infrastructures critiques et bancaires. En charge du durcissement des clusters Nexis, de la conformité ISO 27001 et de la gestion de crise. Fervent promoteur du principe de moindre privilège et de l'authentification multifacteur systématique (MFA). Contact sécurisé : thomas.renard@nexis-cloud.fr.",
+        recentPost: {
+          date: "Il y a 1 semaine",
+          text: "Rappel essentiel : le facteur humain reste le premier vecteur d'intrusion dans les organisations modernes. Chez Nexis, nous venons de finaliser une session de sensibilisation au spear-phishing et à l'usurpation d'identité pour 100% de nos collaborateurs. La vigilance numérique est l'affaire de tous !"
+        },
+        experiences: [
+          { role: "RSSI / Head of Cybersecurity", company: "Nexis Cloud Solutions", date: "Oct 2024 - Présent", desc: "Définition de la PSSI, audit ISO 27001, implémentation des sondes EDR/XDR et coordination des tests d'intrusion périodiques." },
+          { role: "Lead Sécurité Opérationnelle (SOC)", company: "Banque Grand Ouest", date: "2018 - 2024 • 6 ans", desc: "Gestion des alertes de sécurité, réponse à incident et tests de phishing internes." }
+        ],
+        skills: ["ISO 27001", "PSSI", "Zero-Trust Architecture", "Spear-Phishing Defense", "MFA/FIDO2", "Audit de Sécurité"]
+      },
+      julien: {
+        name: "Julien Da Silva",
+        headline: "Lead DevOps & Cloud Infrastructure @ Nexis Cloud Solutions | AWS Certified Solutions Architect | Kubernetes Enthusiast",
+        location: "Nantes, Pays de la Loire, France",
+        connections: "618 relations",
+        img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+        bannerColor: "from-blue-950 to-cyan-900",
+        about: "Architecte DevOps focalisé sur l'automatisation, la haute disponibilité et la scalabilité des pipelines ERP. Fan d'open-source, de conteneurs et de CI/CD sans interruption de service. Basé à Nantes. Contact direct : julien.dasilva@nexis-cloud.fr.",
+        recentPost: {
+          date: "Il y a 6 jours",
+          text: "Grosse semaine de refactorisation sur notre pipeline d'ingestion Kafka ! On est passés sous Terraform avec des clusters EKS isolés. Merci aux copains de l'équipe pour les revues de code. Prochaine étape : durcissement des politiques RBAC avec Thomas !"
+        },
+        experiences: [
+          { role: "Lead DevOps & Cloud Infrastructure", company: "Nexis Cloud Solutions", date: "Juin 2022 - Présent • 3 ans", desc: "Supervision des clusters Kubernetes AWS (EKS), automatisation des déploiements GitLab CI, monitoring Grafana/Prometheus et gestion des flux Kafka." },
+          { role: "Ingénieur Cloud & DevOps", company: "Nantes Cloud Systems", date: "2019 - 2022 • 3 ans", desc: "Migration d'architectures monolithiques vers des microservices Docker et Kubernetes." }
+        ],
+        skills: ["Kubernetes (EKS)", "Terraform", "Amazon Web Services (AWS)", "Docker", "Apache Kafka", "GitLab CI/CD", "Go"]
       }
-    });
+    };
+
+    function openLinkedIn(target) {
+      const modal = document.getElementById('linkedinModal');
+      const companyView = document.getElementById('linkedinCompanyView');
+      const profileView = document.getElementById('linkedinProfileView');
+      const searchInput = document.getElementById('linkedinSearchInput');
+
+      modal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+
+      if (target === 'company') {
+        companyView.classList.remove('hidden');
+        profileView.classList.add('hidden');
+        searchInput.value = "Nexis Cloud Solutions";
+        switchCompanyTab('home');
+      } else if (linkedInData[target]) {
+        renderProfile(target);
+      }
+    }
+
+    function renderProfile(key) {
+      const p = linkedInData[key];
+      const companyView = document.getElementById('linkedinCompanyView');
+      const profileView = document.getElementById('linkedinProfileView');
+      const searchInput = document.getElementById('linkedinSearchInput');
+
+      companyView.classList.add('hidden');
+      profileView.classList.remove('hidden');
+      searchInput.value = p.name;
+
+      document.getElementById('profileName').innerText = p.name;
+      document.getElementById('profileHeadline').innerText = p.headline;
+      document.getElementById('profileLocation').innerText = p.location;
+      document.getElementById('profileConnections').innerText = p.connections;
+      document.getElementById('profileImg').src = p.img;
+      document.getElementById('profileBanner').className = `h-36 sm:h-48 bg-gradient-to-r ${p.bannerColor} relative`;
+      document.getElementById('profileAbout').innerText = p.about;
+
+      // Post
+      document.getElementById('profileRecentPost').innerHTML = `
+        <div class="text-[11px] text-gray-400 mb-1">Publié par ${p.name} • ${p.recentPost.date}</div>
+        <p class="text-xs text-gray-800 leading-relaxed">${p.recentPost.text}</p>
+        <div class="mt-2 text-[11px] text-gray-500 font-semibold">👍 18 J'aime • 4 commentaires</div>
+      `;
+
+      // Expériences
+      document.getElementById('profileExperiences').innerHTML = p.experiences.map(exp => `
+        <div class="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+          <div class="font-bold text-gray-900 text-xs">${exp.role}</div>
+          <div class="text-gray-600 text-[11px]">${exp.company} • ${exp.date}</div>
+          <p class="text-gray-500 text-[11px] mt-1">${exp.desc}</p>
+        </div>
+      `).join('');
+
+      // Compétences
+      document.getElementById('profileSkills').innerHTML = p.skills.map(skill => `
+        <span class="px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 text-[11px] font-medium border border-gray-200">${skill}</span>
+      `).join('');
+    }
+
+    function switchCompanyTab(tab) {
+      const tabs = ['home', 'about', 'jobs', 'people'];
+      tabs.forEach(t => {
+        const content = document.getElementById(`tabContent-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+        if (content && btn) {
+          if (t === tab) {
+            content.classList.remove('hidden');
+            btn.className = "company-tab pb-2 text-[#0a66c2] border-b-2 border-[#0a66c2] font-semibold";
+          } else {
+            content.classList.add('hidden');
+            btn.className = "company-tab pb-2 hover:text-black";
+          }
+        }
+      });
+    }
+
+    function closeLinkedIn() {
+      document.getElementById('linkedinModal').classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
   </script>
 </body>
 </html>
